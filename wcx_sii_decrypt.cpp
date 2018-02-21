@@ -108,9 +108,9 @@ int __stdcall ReadHeaderExW(HANDLE hArcData, tHeaderDataExW* HeaderDataExW)
 			wcscpy_s(HeaderDataExW->FileName, FileName + 1);
 			wcscat_s(HeaderDataExW->FileName, L".txt");
 		}
-		FILETIME tm;
-		if (GetFileTime(arch_data->hFile, NULL, NULL, &tm))
-			FileTimeToDosDateTime(&tm, ((WORD*)(&HeaderDataExW->FileTime)) + 1, (WORD*)(&HeaderDataExW->FileTime));
+		FILETIME tm, ltm;
+		if (GetFileTime(arch_data->hFile, NULL, NULL, &tm) && FileTimeToLocalFileTime(&tm, &ltm))
+			FileTimeToDosDateTime(&ltm, ((WORD*)(&HeaderDataExW->FileTime)) + 1, (WORD*)(&HeaderDataExW->FileTime));
 //		HeaderDataExW->PackSize = HeaderDataExW->UnpSize = elem->Length & 0xffffffff;
 //#ifdef _WIN64
 //		HeaderDataExW->PackSizeHigh = HeaderDataExW->UnpSizeHigh = elem->Length >> 32;
