@@ -1,0 +1,31 @@
+; wcx_sii_decrypt.def : Declares the module parameters for the DLL.
+
+EXPORTS
+	OpenArchive
+	ProcessFile
+	ReadHeader
+	SetChangeVolProc
+	SetProcessDataProc
+
+	OpenArchiveW
+	ProcessFileW
+	CloseArchive
+	SetChangeVolProcW
+	SetProcessDataProcW
+;	PackFiles
+;	PackFilesW
+;	DeleteFiles
+;	DeleteFilesW
+	GetPackerCaps
+;	ConfigurePacker
+;	StartMemPack
+;	StartMemPackW
+;	PackToMem
+;	DoneMemPack
+;	CanYouHandleThisFile
+;	CanYouHandleThisFileW
+;	PackSetDefaultParams
+;	PkSetCryptCallback
+;	ReadHeaderEx
+	ReadHeaderExW
+	GetBackgroundFlags

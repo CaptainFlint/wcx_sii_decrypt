@@ -1,0 +1,7 @@
+[plugininstall]
+description=Total Commander plugin for decrypting SCS save files (SII).
+descriptionrus=Плагин для расшифровки файлов сохранений игр от SCS (SII).
+type=wcx
+file=wcx_sii_decrypt.wcx
+defaultdir=wcx_sii_decrypt
+defaultextension=sii
