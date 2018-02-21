@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "wcx_sii_decrypt.h"
+#include "SII_Decrypt.h"
 
 // Fake functions to make TC load the plugin
 HANDLE __stdcall OpenArchive(tOpenArchiveData* ArchiveData)
@@ -33,6 +34,30 @@ void __stdcall SetProcessDataProc(HANDLE hArcData, tProcessDataProc pProcessData
 	UNREFERENCED_PARAMETER(pProcessDataProc);
 }
 
+// Wrapper class for converting UTF-16LE string into UTF-8 with automatic
+// cleanup when the data are no longer needed.
+class Utf8String
+{
+public:
+	Utf8String(const wchar_t* str)
+	{
+		int data_sz = WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
+		m_data = new char[data_sz];
+		WideCharToMultiByte(CP_UTF8, 0, str, -1, m_data, data_sz, NULL, NULL);
+	}
+
+	~Utf8String()
+	{
+		if (m_data != NULL)
+			delete[] m_data;
+	}
+
+	operator char*() const { return m_data; }
+
+private:
+	char* m_data;
+};
+
 // Open archive
 HANDLE __stdcall OpenArchiveW(tOpenArchiveDataW* ArchiveDataW)
 {
@@ -60,7 +85,15 @@ HANDLE __stdcall OpenArchiveW(tOpenArchiveDataW* ArchiveDataW)
 	DWORD dr;
 	if (!ReadFile(arch_data->hFile, signature, 4, &dr, NULL) ||
 		(dr != 4) ||
-		(memcmp(signature, "ScsC", 4) != 0))
+		((memcmp(signature, "BSII", 4) != 0) &&
+		 (memcmp(signature, "ScsC", 4) != 0)))
+	{
+		delete arch_data;
+		ArchiveDataW->OpenResult = E_UNKNOWN_FORMAT;
+		return NULL;
+	}
+	int32_t fmt = GetFileFormat(Utf8String(ArchiveDataW->ArcName));
+	if ((fmt != SIIDEC_RESULT_SUCCESS) && (fmt != SIIDEC_RESULT_BINARY_FORMAT))
 	{
 		delete arch_data;
 		ArchiveDataW->OpenResult = E_UNKNOWN_FORMAT;

@@ -41,6 +41,9 @@
     <ClInclude Include="wcx_sii_decrypt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SII_Decrypt\SII_Decrypt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="wcx_sii_decrypt.rc">
