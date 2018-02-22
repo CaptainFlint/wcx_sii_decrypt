@@ -21,7 +21,11 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 			WCHAR* pos = wcsrchr(path, L'\\');
 			if (pos != NULL)
 				*pos = L'\0';
+#if defined _M_X64
 			wcscat_s(path, L"\\SII_Decrypt_64.dll");
+#else
+			wcscat_s(path, L"\\SII_Decrypt_32.dll");
+#endif
 			hSiiModule = LoadLibrary(path);
 			break;
 		}

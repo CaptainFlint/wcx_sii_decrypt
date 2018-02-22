@@ -1,0 +1,15 @@
+EXPORTS
+	GetMemoryFormat
+	GetFileFormat
+	IsEncryptedMemory
+	IsEncryptedFile
+	IsEncodedMemory
+	IsEncodedFile
+	DecryptMemory
+	DecryptFile
+	DecodeMemoryHelper
+	DecodeMemory
+	DecodeFile
+	DecryptAndDecodeMemoryHelper
+	DecryptAndDecodeMemory
+	DecryptAndDecodeFile
