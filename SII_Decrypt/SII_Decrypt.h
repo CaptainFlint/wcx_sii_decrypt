@@ -480,4 +480,7 @@ extern "C"
 		SIIDEC_RESULT_BUFFER_TOO_SMALL - not returned by this function
 	*/
 	int32_t __stdcall DecryptAndDecodeFile(char* InputFileUtf8, char* OutputFileUtf8);
+
+	/* Mentioned but undocumented... */
+	void __stdcall FreeHelper(void** Helper);
 }

@@ -13,3 +13,4 @@ EXPORTS
 	DecryptAndDecodeMemoryHelper
 	DecryptAndDecodeMemory
 	DecryptAndDecodeFile
+	FreeHelper

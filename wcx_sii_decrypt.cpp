@@ -134,7 +134,6 @@ int __stdcall ReadHeaderExW(HANDLE hArcData, tHeaderDataExW* HeaderDataExW)
 		ret_value = E_END_ARCHIVE;
 	else
 	{
-		arch_data->ContentsPos = 1;
 		memset(HeaderDataExW, 0, sizeof(tHeaderDataExW));
 		wchar_t* FileName = wcsrchr(arch_data->ArcName, L'\\');
 		if (FileName == NULL)
@@ -162,52 +161,73 @@ int __stdcall ReadHeaderExW(HANDLE hArcData, tHeaderDataExW* HeaderDataExW)
 // Unpack the next packed file
 int __stdcall ProcessFileW(HANDLE hArcData, int Operation, WCHAR* DestPathW, WCHAR* DestNameW)
 {
+	ArchiveHandleW* arch_data = (ArchiveHandleW*)hArcData;
+	if (arch_data->ContentsPos > 0)
+		return E_END_ARCHIVE;
+	++arch_data->ContentsPos;
 	switch (Operation)
 	{
 	case PK_SKIP:
-	case PK_TEST:
 		return 0;
+	case PK_TEST:
 	case PK_EXTRACT:
-		return E_NOT_SUPPORTED;
+		{
+			LARGE_INTEGER zero, sz;
+			zero.QuadPart = 0;
+			SetFilePointerEx(arch_data->hFile, zero, &sz, FILE_END);
+			SetFilePointerEx(arch_data->hFile, zero, NULL, FILE_BEGIN);
+			BYTE* data = new BYTE[sz.QuadPart];
+			DWORD dr;
+			if (!ReadFile(arch_data->hFile, data, sz.QuadPart, &dr, NULL) || (dr != sz.QuadPart))
+			{
+				delete[] data;
+				return E_EREAD;
+			}
+			size_t res_sz = 0;
+			void* SiiHelper = NULL;
+			int32_t res = DecryptAndDecodeMemoryHelper(data, sz.QuadPart, NULL, &res_sz, &SiiHelper);
+			if (res != SIIDEC_RESULT_SUCCESS)
+			{
+				delete[] data;
+				return E_BAD_DATA;
+			}
+			BYTE* res_data = new BYTE[res_sz];
+			res = DecryptAndDecodeMemoryHelper(data, sz.QuadPart, res_data, &res_sz, &SiiHelper);
+			if (res != SIIDEC_RESULT_SUCCESS)
+			{
+				FreeHelper(&SiiHelper);
+				delete[] data;
+				delete[] res_data;
+				return E_BAD_DATA;
+			}
+			int ret_value = 0;
+			if (Operation == PK_EXTRACT)
+			{
+				WCHAR DestFullName[MAX_PATH_EX];
+				DestFullName[0] = L'\0';
+				if (DestPathW != NULL)
+					wcscpy_s(DestFullName, MAX_PATH_EX, DestPathW);
+				wcscat_s(DestFullName, MAX_PATH_EX, DestNameW);
+				HANDLE f = CreateFile(DestFullName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+				if (f == INVALID_HANDLE_VALUE)
+				{
+					ret_value = E_ECREATE;
+				}
+				else
+				{
+					DWORD dw;
+					if (!WriteFile(f, res_data, res_sz, &dw, NULL) || (dw != res_sz))
+						ret_value = E_EWRITE;
+					CloseHandle(f);
+				}
+			}
+			delete[] data;
+			delete[] res_data;
+			return ret_value;
+		}
 	default:
 		return E_NOT_SUPPORTED;
 	}
-//	ArchiveHandleW* arch_data = (ArchiveHandleW*)hArcData;
-//	WCHAR DestFullName[MAX_PATH_EX];
-//	DestFullName[0] = L'\0';
-//	int ret_value = 0;
-//	MemFile* elem = arch_data->hd.file_list.GetCurrentElement();
-//	if (elem == NULL)
-//		return E_END_ARCHIVE;
-//	arch_data->hd.file_list.MoveToNextElement();
-//
-//	HANDLE f;
-//	const BYTE* data = elem->Data;
-//	size_t data_len = elem->Length;
-//	DWORD w;
-//	switch (Operation)
-//	{
-//	case PK_SKIP:
-//	case PK_TEST:
-//		break;
-//	case PK_EXTRACT:
-//		if (DestPathW != NULL)
-//			wcscpy_s(DestFullName, MAX_PATH_EX, DestPathW);
-//		wcscat_s(DestFullName, MAX_PATH_EX, DestNameW);
-//		f = CreateFile(DestFullName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-//		if (f == INVALID_HANDLE_VALUE)
-//		{
-//			ret_value = E_ECREATE;
-//			break;
-//		}
-//		if ((data != NULL) && (!WriteFile(f, data, data_len, &w, NULL) || (w != data_len)))
-//			ret_value = E_EWRITE;
-//		CloseHandle(f);
-//		break;
-//	default:
-//		ret_value = E_NOT_SUPPORTED;
-//	}
-//	return ret_value;
 }
 
 // Close the archive
