@@ -88,6 +88,7 @@ HANDLE __stdcall OpenArchiveW(tOpenArchiveDataW* ArchiveDataW)
 		((memcmp(signature, "BSII", 4) != 0) &&
 		 (memcmp(signature, "ScsC", 4) != 0)))
 	{
+		CloseHandle(arch_data->hFile);
 		delete arch_data;
 		ArchiveDataW->OpenResult = E_UNKNOWN_FORMAT;
 		return NULL;
@@ -95,11 +96,13 @@ HANDLE __stdcall OpenArchiveW(tOpenArchiveDataW* ArchiveDataW)
 	int32_t fmt = GetFileFormat(Utf8String(ArchiveDataW->ArcName));
 	if ((fmt != SIIDEC_RESULT_SUCCESS) && (fmt != SIIDEC_RESULT_BINARY_FORMAT))
 	{
+		CloseHandle(arch_data->hFile);
 		delete arch_data;
 		ArchiveDataW->OpenResult = E_UNKNOWN_FORMAT;
 		return NULL;
 	}
 	// File looks OK, return the valid handle
+	SetFilePointer(arch_data->hFile, 0, NULL, FILE_BEGIN);
 	wcscpy_s(arch_data->ArcName, ArchiveDataW->ArcName);
 	arch_data->OpenMode = ArchiveDataW->OpenMode;
 	arch_data->pProcessDataProcW = NULL;
@@ -144,6 +147,7 @@ int __stdcall ReadHeaderExW(HANDLE hArcData, tHeaderDataExW* HeaderDataExW)
 		FILETIME tm, ltm;
 		if (GetFileTime(arch_data->hFile, NULL, NULL, &tm) && FileTimeToLocalFileTime(&tm, &ltm))
 			FileTimeToDosDateTime(&ltm, ((WORD*)(&HeaderDataExW->FileTime)) + 1, (WORD*)(&HeaderDataExW->FileTime));
+		// Cannot get the decrypted content size without actual decryption which is very long; skipping
 //		HeaderDataExW->PackSize = HeaderDataExW->UnpSize = elem->Length & 0xffffffff;
 //#ifdef _WIN64
 //		HeaderDataExW->PackSizeHigh = HeaderDataExW->UnpSizeHigh = elem->Length >> 32;
