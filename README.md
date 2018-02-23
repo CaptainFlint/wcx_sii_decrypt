@@ -1,4 +1,4 @@
-# wcx_sii_decrypt
+﻿# wcx_sii_decrypt
 This is a Total Commander plugin for unpacking SII files: save data from SCS games.
 
 Currently tested on Euro Truck Simulator 2 and American Truck Simulator. Supported types:
@@ -13,7 +13,7 @@ The SII file is opened as an archive containing a single TXT file representing t
 The TXT file size is displayed as 0 because it is impossible to know the size of the decrypted data without actual decrypting, and this can be quite long. I didn't want to make opening the archive too slow.
 
 ## Requirements and Dependencies
-The project is based on the [SII_Decrypt](https://github.com/ncs-sniper/SII_Decrypt) project. The DLLs from it are packaged along with the plugin and are used for the actual decrypting and decoding.
+The project is based on the [SII_Decrypt](https://github.com/ncs-sniper/SII_Decrypt) project by František Milt. The DLLs from it are packaged along with the plugin and are used for the actual decrypting and decoding.
 
 The `SII_Decrypt` DLLs can be updated independently as long as the binary interface remains compatible.
 
