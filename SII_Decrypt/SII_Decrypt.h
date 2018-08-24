@@ -481,6 +481,23 @@ extern "C"
 	*/
 	int32_t __stdcall DecryptAndDecodeFile(char* InputFileUtf8, char* OutputFileUtf8);
 
-	/* Mentioned but undocumented... */
+	/*-------------------------------------------------------------------------------
+
+	  FreeHelper
+
+	  Frees resources taken by a helper object allocated by DecodeMemoryHelper or
+	  DecryptAndDecodeMemoryHelper function. Refer to those functions documentation
+	  for details about when you have to call this function and when you don't.
+	  Passing in an already freed object is allowed, the function just returns
+	  immediately.
+
+	  Parameters:
+
+	    Helper - Pointer to a variable containing helper object to be freed
+
+	  Returns:
+
+	    This routine does not have a return value.
+	*/
 	void __stdcall FreeHelper(void** Helper);
 }
