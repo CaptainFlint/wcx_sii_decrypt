@@ -86,7 +86,8 @@ HANDLE __stdcall OpenArchiveW(tOpenArchiveDataW* ArchiveDataW)
 	if (!ReadFile(arch_data->hFile, signature, 4, &dr, NULL) ||
 		(dr != 4) ||
 		((memcmp(signature, "BSII", 4) != 0) &&
-		 (memcmp(signature, "ScsC", 4) != 0)))
+		 (memcmp(signature, "ScsC", 4) != 0) &&
+		 (memcmp(signature, "3nK", 3) != 0)))
 	{
 		CloseHandle(arch_data->hFile);
 		delete arch_data;

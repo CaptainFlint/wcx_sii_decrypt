@@ -41,6 +41,7 @@ When the `SII_Decrypt` project updates without breaking compatibility it is enou
 ## Version history
 ### 1.4.0.0, 25.08.2018
 * Updated to SII_Decrypt 1.4.2.
+* Added experimental support for 3nK format.
 
 ### 1.0.0.0, 23.02.2018
 * First public version.
