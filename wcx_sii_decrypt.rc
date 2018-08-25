@@ -27,8 +27,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION 1,4,0,0
+ PRODUCTVERSION 1,4,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -45,7 +45,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "CaptainFlint Software"
             VALUE "FileDescription", "Total Commander plugin for decrypting SCS save files (SII)"
-            VALUE "FileVersion", "1.0.0.0"
+            VALUE "FileVersion", "1.4.0.0"
             VALUE "InternalName", "wcx_sii_decrypt"
             VALUE "LegalCopyright", "Copyright © 2018 CaptainFlint Software"
 #ifdef _WIN64
@@ -54,7 +54,7 @@ BEGIN
             VALUE "OriginalFilename", "wcx_sii_decrypt.wcx"
 #endif
             VALUE "ProductName", "SII decrypting plugin for TC"
-            VALUE "ProductVersion", "1.0.0.0"
+            VALUE "ProductVersion", "1.4.0.0"
         END
     END
     BLOCK "VarFileInfo"

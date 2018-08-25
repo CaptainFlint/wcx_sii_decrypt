@@ -94,7 +94,7 @@ HANDLE __stdcall OpenArchiveW(tOpenArchiveDataW* ArchiveDataW)
 		return NULL;
 	}
 	int32_t fmt = GetFileFormat(Utf8String(ArchiveDataW->ArcName));
-	if ((fmt != SIIDEC_RESULT_SUCCESS) && (fmt != SIIDEC_RESULT_BINARY_FORMAT))
+	if ((fmt != SIIDEC_RESULT_FORMAT_ENCRYPTED) && (fmt != SIIDEC_RESULT_FORMAT_BINARY) && (fmt != SIIDEC_RESULT_FORMAT_3NK))
 	{
 		CloseHandle(arch_data->hFile);
 		delete arch_data;
@@ -176,23 +176,23 @@ int __stdcall ProcessFileW(HANDLE hArcData, int Operation, WCHAR* DestPathW, WCH
 			zero.QuadPart = 0;
 			SetFilePointerEx(arch_data->hFile, zero, &sz, FILE_END);
 			SetFilePointerEx(arch_data->hFile, zero, NULL, FILE_BEGIN);
-			BYTE* data = new BYTE[sz.QuadPart];
+			BYTE* data = new BYTE[static_cast<unsigned int>(sz.QuadPart)];
 			DWORD dr;
-			if (!ReadFile(arch_data->hFile, data, sz.QuadPart, &dr, NULL) || (dr != sz.QuadPart))
+			if (!ReadFile(arch_data->hFile, data, static_cast<DWORD>(sz.QuadPart), &dr, NULL) || (dr != sz.QuadPart))
 			{
 				delete[] data;
 				return E_EREAD;
 			}
 			size_t res_sz = 0;
 			void* SiiHelper = NULL;
-			int32_t res = DecryptAndDecodeMemoryHelper(data, sz.QuadPart, NULL, &res_sz, &SiiHelper);
+			int32_t res = DecryptAndDecodeMemoryHelper(data, static_cast<size_t>(sz.QuadPart), NULL, &res_sz, &SiiHelper);
 			if (res != SIIDEC_RESULT_SUCCESS)
 			{
 				delete[] data;
 				return E_BAD_DATA;
 			}
 			BYTE* res_data = new BYTE[res_sz];
-			res = DecryptAndDecodeMemoryHelper(data, sz.QuadPart, res_data, &res_sz, &SiiHelper);
+			res = DecryptAndDecodeMemoryHelper(data, static_cast<size_t>(sz.QuadPart), res_data, &res_sz, &SiiHelper);
 			if (res != SIIDEC_RESULT_SUCCESS)
 			{
 				FreeHelper(&SiiHelper);
@@ -216,7 +216,7 @@ int __stdcall ProcessFileW(HANDLE hArcData, int Operation, WCHAR* DestPathW, WCH
 				else
 				{
 					DWORD dw;
-					if (!WriteFile(f, res_data, res_sz, &dw, NULL) || (dw != res_sz))
+					if (!WriteFile(f, res_data, static_cast<DWORD>(res_sz), &dw, NULL) || (dw != res_sz))
 						ret_value = E_EWRITE;
 					CloseHandle(f);
 				}

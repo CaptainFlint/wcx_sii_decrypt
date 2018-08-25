@@ -1,16 +1,22 @@
 EXPORTS
+	APIVersion
 	GetMemoryFormat
 	GetFileFormat
 	IsEncryptedMemory
 	IsEncryptedFile
 	IsEncodedMemory
 	IsEncodedFile
+	Is3nKEncodedMemory
+	Is3nKEncodedFile
 	DecryptMemory
 	DecryptFile
+	DecryptFileInMemory
 	DecodeMemoryHelper
 	DecodeMemory
 	DecodeFile
+	DecodeFileInMemory
 	DecryptAndDecodeMemoryHelper
 	DecryptAndDecodeMemory
 	DecryptAndDecodeFile
+	DecryptAndDecodeFileInMemory
 	FreeHelper

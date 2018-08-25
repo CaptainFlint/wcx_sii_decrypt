@@ -4,4 +4,4 @@ descriptionrus=Плагин для расшифровки файлов сохранений игр от SCS (SII).
 type=wcx
 file=wcx_sii_decrypt.wcx
 defaultdir=wcx_sii_decrypt
-defaultextension=sii
+defaultextension=sii,3nk
