@@ -5,6 +5,7 @@ Currently tested on Euro Truck Simulator 2 and American Truck Simulator. Support
 * encrypted text format (AES);
 * plain binary format (BSII);
 * encrypted binary format (BSII+AES).
+
 Also, the 3NK format is supported, which is used e.g. for the localization files.
 
 The SII/3NK file is opened as an archive containing a single TXT file representing the plain text contents you can view or extract.
