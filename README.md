@@ -2,11 +2,12 @@
 This is a Total Commander plugin for unpacking SII files: save data from SCS games.
 
 Currently tested on Euro Truck Simulator 2 and American Truck Simulator. Supported types:
-* encrypted text format;
-* encrypted binary format;
-* plain binary format.
+* encrypted text format (AES);
+* plain binary format (BSII);
+* encrypted binary format (BSII+AES).
+Also, the 3NK format is supported, which is used e.g. for the localization files.
 
-The SII file is opened as an archive containing a single TXT file representing the plain text contents you can view or extract.
+The SII/3NK file is opened as an archive containing a single TXT file representing the plain text contents you can view or extract.
 
 **Note:**
 
@@ -39,7 +40,7 @@ When the `SII_Decrypt` project updates without breaking compatibility it is enou
 4. Build the main project.
 
 ## Version history
-### 1.4.0.0, 25.08.2018
+### 1.4.0.0, 20.11.2018
 * Updated to SII_Decrypt 1.4.2.
 * Added experimental support for 3nK format.
 
